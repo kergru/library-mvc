@@ -1,0 +1,38 @@
+spring:
+  application:
+    name: LibraryBackend
+
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8085/realms/library
+          jwk-set-uri: http://localhost:8085/realms/library/protocol/openid-connect/certs
+          jws-algorithms: RS256
+  datasource:
+    url: jdbc:mysql://localhost:3306/library?useSSL=false&allowPublicKeyRetrieval=true&useUnicode=true&characterEncoding=utf8&serverTimezone=UTC
+    username: admin
+    password: pwd
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    hikari:
+      maximum-pool-size: 10
+      minimum-idle: 2
+      connection-timeout: 30000
+      validation-timeout: 5000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+
+  jpa:
+    open-in-view: false
+    show-sql: false
+    hibernate:
+      ddl-auto: validate
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+    properties:
+      hibernate:
+        format_sql: true
+        jdbc.time_zone: UTC
+
+server:
+  port: 8081
