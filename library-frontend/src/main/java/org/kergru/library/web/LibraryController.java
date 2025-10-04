@@ -30,7 +30,7 @@ public class LibraryController {
 
   @GetMapping("/me")
   public String me(Model model, @AuthenticationPrincipal OidcUser user) {
-    var userDto = libraryService.getUserWithLoans(user.getSubject());
+    var userDto = libraryService.getUserWithLoans(user.getPreferredUsername());
     if (userDto.isPresent()) {
       model.addAttribute("userWithLoans", userDto.get());
       return "users/detail";

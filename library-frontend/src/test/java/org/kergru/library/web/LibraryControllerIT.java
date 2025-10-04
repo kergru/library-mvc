@@ -71,26 +71,7 @@ public class LibraryControllerIT {
     mockMvc.perform(get("/library/ui/me")
             .with(oauth2Login().oauth2User(mockUser)))
         .andExpect(status().isOk())
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("demo_user_1")));
-  }
-
-  private OidcUser mockOidcUser() {
-    OidcIdToken idToken = new OidcIdToken(
-        "mock-token-value",
-        Instant.now(),
-        Instant.now().plusSeconds(3600),
-        Map.of("sub", "demo_user_1", "preferred_username", "demo_user_1")
-    );
-
-    // Optional: OIDC UserInfo
-    OidcUserInfo userInfo = new OidcUserInfo(Map.of("preferred_username", "demo_user_1"));
-
-    // DefaultOidcUser erstellen
-    return new DefaultOidcUser(
-        List.of(new SimpleGrantedAuthority("ROLE_USER")),
-        idToken,
-        userInfo,
-        "preferred_username"
-    );
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("demo_user_1")))
+        .andExpect(content().string(org.hamcrest.Matchers.containsString("The Great Gatsby")));
   }
 }

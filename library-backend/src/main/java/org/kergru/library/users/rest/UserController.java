@@ -35,7 +35,7 @@ public class UserController {
    * only accessible by the librarian or the user himself
    */
   @GetMapping("/users/{userName}")
-  @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['sub']")
+  @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['preferred_username']")
   public ResponseEntity<UserDto> getUserByUserName(@PathVariable String userName) {
     Optional<UserDto> user = userService.findUserByUserName(userName);
     return user.map(ResponseEntity::ok).orElseGet(() -> ResponseEntity.notFound().build());
@@ -45,7 +45,7 @@ public class UserController {
    * All borrowed books by a user,
    * only accessible by the librarian or the user himself
    */
-  @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['sub']")
+  @PreAuthorize("hasRole('LIBRARIAN') or #userName == authentication.principal.claims['preferred_username']")
   @GetMapping("/users/{userName}/loans")
   public ResponseEntity<List<LoanDto>> getBorrowedBooksByUser(@PathVariable String userName) {
     return ResponseEntity.ok(loansService.findBorrowedByUser(userName));

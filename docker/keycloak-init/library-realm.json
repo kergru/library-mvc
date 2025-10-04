@@ -59,9 +59,10 @@
   "clients": [
     {
       "clientId": "library-frontend",
+      "secret": "secret",
       "name": "Library Web App",
       "enabled": true,
-      "publicClient": true,
+      "publicClient": false,
       "rootUrl": "http://localhost:8080/",
       "baseUrl": "http://localhost:8080/",
       "redirectUris": [
@@ -76,9 +77,6 @@
       "optionalClientScopes": [
         "offline_access"
       ],
-      "attributes": {
-        "pkce.code.challenge.method": "S256"
-      },
       "protocolMappers": [
         {
           "name": "realm roles",
