@@ -6,6 +6,7 @@ CREATE DATABASE IF NOT EXISTS library;
 -- Berechtigungen für admin-User
 CREATE USER IF NOT EXISTS 'admin'@'%' IDENTIFIED BY 'pwd';
 GRANT ALL PRIVILEGES ON library.* TO 'admin'@'%';
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%';
 FLUSH PRIVILEGES;
 
 USE library;

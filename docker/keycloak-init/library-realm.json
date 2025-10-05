@@ -63,6 +63,7 @@
       "name": "Library Web App",
       "enabled": true,
       "publicClient": false,
+      "directAccessGrantsEnabled": true,
       "rootUrl": "http://localhost:8080/",
       "baseUrl": "http://localhost:8080/",
       "redirectUris": [
