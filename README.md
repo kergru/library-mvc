@@ -9,7 +9,15 @@ Project is divided into three modules:
 
 Project uses Keycloak as OAuth2 provider and MySQL as database which will be started using Docker Compose.
 
-## Komponenten
+## Project Structure
+| Module                   | Description                                                  |
+| ------------------------ |--------------------------------------------------------------|
+| **library-commons**      | Shared domain classes, DTOs, and utilities                   |
+| **library-backend**      | Reactive backend service acting as an OAuth2 resource server |
+| **library-frontend**     | Reactive frontend web application acting as an OAuth2 client   |
+| **Authorization Server** | Keycloak – handles login, issues tokens, exposes JWKS        |
+
+## Components
 | Layer                               | Component                                   | Purpose                                                           |
 |-----------------------------------|---------------------------------------------|-------------------------------------------------------------------|
 | **Frontend (`library-frontend`)** | Spring Boot MVC + Thymeleaf + OAuth2 Client | Authenticates user via OIDC, <br/>calls backend with Bearer Token |

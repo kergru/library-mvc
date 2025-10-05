@@ -9,8 +9,6 @@ import com.nimbusds.jwt.SignedJWT;
 import dasniko.testcontainers.keycloak.KeycloakContainer;
 import java.time.Duration;
 import java.util.Map;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.kergru.library.model.UserDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +26,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.testcontainers.containers.wait.strategy.Wait;
+import org.testcontainers.junit.jupiter.Container;
 import org.testcontainers.junit.jupiter.Testcontainers;
 import org.testcontainers.utility.MountableFile;
 
@@ -39,6 +38,7 @@ import org.testcontainers.utility.MountableFile;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class LibraryBackendApplicationTests {
 
+  @Container
   static KeycloakContainer keycloak
       = new KeycloakContainer("quay.io/keycloak/keycloak:26.3.1")
       .withCopyFileToContainer(
@@ -71,16 +71,6 @@ class LibraryBackendApplicationTests {
 
   @Autowired
   private TestRestTemplate restTemplate;
-
-  @BeforeAll
-  static void setup() {
-    keycloak.start();
-  }
-
-  @AfterAll
-  static void teardown() {
-    keycloak.stop();
-  }
 
   @Test
   void contextLoads() {
