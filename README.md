@@ -19,7 +19,7 @@ Project uses Keycloak as OAuth2 provider and MySQL as database which will be sta
 
 ## Core Spring Components per Module
 | Module                                | Layer / Area             | Key Classes / Beans                                                                                                                                                   | Purpose                                                                               |
-| ------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| ------------------------------------- | ------------------------ |-----------------------------------------------------------------------------------------------------------------------------------------------------------------------| ------------------------------------------------------------------------------------- |
 | **library-frontend**                  | **Security**             | `SecurityFilterChain` (with `.oauth2Login()`)<br>`ClientRegistrationRepository`<br>`OAuth2AuthorizedClientService`<br>`AuthenticationPrincipal`                       | Handles OIDC login, stores tokens, and manages the `SecurityContext`                  |
 |                                       | **Web / Controller**     | `@Controller`, `@GetMapping`, `Model`<br>`ThymeleafViewResolver`                                                                                                      | Renders HTML UI with Thymeleaf and provides routes such as `/books`, `/login`         |
 |                                       | **Service / API Calls**  | `RestTemplate` or `WebClient` (with `ServerOAuth2AuthorizedClientExchangeFilterFunction`)                                                                             | Invokes the `library-backend` REST endpoints using Bearer Tokens                      |
@@ -28,18 +28,18 @@ Project uses Keycloak as OAuth2 provider and MySQL as database which will be sta
 |                                       | **Web / REST API**       | `@RestController`, `@GetMapping`, `ResponseEntity`                                                                                                                    | Exposes protected REST endpoints (e.g. `/api/books`, `/api/users`)                    |
 |                                       | **Data / Service Layer** | `@Service`, `@Repository`, JPA entities                                                                                                                               | Business logic, database access, and persistence                                      |
 |                                       | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                                        | Defines JWKS URI and other security properties                                        |
-| **Authorization Server** *(external)* | —                        | Keycloak, Auth0, Azure AD, or Spring Authorization Server                                                                                                             | Performs user login, issues Access/ID Tokens, and publishes JWKS for token validation |
+| **Authorization Server** *(external)* | —                        | Keycloak                                                                                                                                                              | Performs user login, issues Access/ID Tokens, and publishes JWKS for token validation |
 
 ## Flow
 ```mermaid
-flowchart LR
+flowchart TB
     %% --- FRONTEND ---
     subgraph FRONTEND["💻 library-frontend (Spring Boot App – OAuth2 Client + Web UI)"]
         F1["@SpringBootApplication"]
         F2["SecurityFilterChain + oauth2Login()"]
-        F3["Thymeleaf Web UI (Rendert HTML-Seiten)"]
-        F4["RestTemplate / WebClient (mit Bearer Token)"]
-        F5["ClientRegistrationRepository (OIDC Provider Konfiguration)"]
+        F3["Thymeleaf Web UI (Renders HTML pages)"]
+        F4["RestTemplate (with Bearer Token)"]
+        F5["ClientRegistrationRepository (OIDC Provider configuration)"]
     end
 
     %% --- BACKEND ---
@@ -52,7 +52,7 @@ flowchart LR
     end
 
     %% --- AUTH SERVER ---
-    subgraph AUTH["🛡️ Authorization Server (z. B. Keycloak / Auth0 / Azure AD)"]
+    subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
         A1["/authorize"]
         A2["/token"]
         A3["/.well-known/jwks.json"]
@@ -60,22 +60,22 @@ flowchart LR
     end
 
     %% --- USER ---
-    subgraph USER["👤 Benutzer / Browser"]
+    subgraph USER["👤 User / Browser"]
         U1["Browser / Web Client"]
     end
 
     %% --- FLOWS ---
-    U1 -->|"1️⃣ GET /books (geschützt)"| FRONTEND
-    FRONTEND -->|"2️⃣ Redirect zu /authorize"| AUTH
+    U1 -->|"1️⃣ GET /books (protected)"| FRONTEND
+    FRONTEND -->|"2️⃣ Redirect to /authorize"| AUTH
     AUTH -->|"3️⃣ Login / Credentials"| U1
     AUTH -->|"4️⃣ Authorization Code"| FRONTEND
-    FRONTEND -->|"5️⃣ Tauscht Code gegen Token (/token)"| AUTH
+    FRONTEND -->|"5️⃣ Changes Code for Token (/token)"| AUTH
     AUTH -->|"6️⃣ ID + Access Token"| FRONTEND
-    FRONTEND -->|"7️⃣ Ruft REST-API auf mit Bearer Token"| BACKEND
-    BACKEND -->|"8️⃣ Prüft Signatur via JWKS"| AUTH
+    FRONTEND -->|"7️⃣ Calls REST-API with Bearer Token"| BACKEND
+    BACKEND -->|"8️⃣ Validates signature via JWKS"| AUTH
     AUTH -->|"9️⃣ /.well-known/jwks.json (Public Keys)"| BACKEND
-    BACKEND -->|"🔟 Liefert JSON-Daten (z. B. Buchliste)"| FRONTEND
-    FRONTEND -->|"🏁 Rendert HTML (Thymeleaf)"| U1
+    BACKEND -->|"🔟 Provides JSON-Data (books, users)"| FRONTEND
+    FRONTEND -->|"🏁 Renders HTML (Thymeleaf)"| U1
 
     %% --- STYLES ---
     classDef comp fill:#f6f8fa,stroke:#ccc,stroke-width:1px,rx:8px,ry:8px;
@@ -84,20 +84,20 @@ flowchart LR
 ```
 ## Architecture
 ```mermaid
-flowchart LR
+flowchart TB
     %% ===== MODULES =====
     subgraph FRONTEND["💻 library-frontend (Spring Boot OAuth2 Client + Thymeleaf UI)"]
         FE1["OIDC Login (Authorization Code Flow)"]
         FE2["Thymeleaf Web UI"]
-        FE3["RestTemplate / WebClient\n(mit Bearer Token)"]
+        FE3["RestTemplate (with Bearer Token)"]
     end
 
     subgraph BACKEND["⚙️ library-backend (Spring Boot Resource Server)"]
-        BE1["JWT Validierung (NimbusJwtDecoder)"]
-        BE2["Geschützte REST-Endpoints\n/api/books, /api/users"]
+        BE1["JWT Validation (NimbusJwtDecoder)"]
+        BE2["Protected REST-Endpoints\n/api/books, /api/users"]
     end
 
-    subgraph AUTH["🛡️ Authorization Server\n(z. B. Keycloak / Auth0 / Azure AD)"]
+    subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
         AS1["/authorize"]
         AS2["/token"]
         AS3["/.well-known/jwks.json"]
