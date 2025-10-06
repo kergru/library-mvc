@@ -9,13 +9,18 @@ public record LoanDto(
     Instant borrowedAt,
     Instant returnedAt
 ) {
+
   public String getReturnedAtFormatted() {
-    if (returnedAt == null) return "";
+    if (returnedAt == null) {
+      return "";
+    }
     return getDateFormatted(returnedAt);
   }
 
   public String getBorrowedAtFormatted() {
-    if (borrowedAt == null) return "";
+    if (borrowedAt == null) {
+      return "";
+    }
     return getDateFormatted(borrowedAt);
   }
 

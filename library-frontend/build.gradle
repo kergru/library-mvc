@@ -20,11 +20,15 @@ dependencies {
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
-    testImplementation 'org.springframework.security:spring-security-test'     // Security Test helpers
-    testImplementation 'org.springframework:spring-webflux'
+    testImplementation 'org.springframework.security:spring-security-test'
+
+    // Testcontainers
+    testImplementation 'org.springframework.boot:spring-boot-testcontainers'
+    testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
+    testImplementation 'com.github.dasniko:testcontainers-keycloak:3.8.0'
 
     // WireMock
-    testImplementation 'com.github.tomakehurst:wiremock-standalone:3.0.1'
+    testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
 
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'

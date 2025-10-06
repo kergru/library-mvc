@@ -25,7 +25,8 @@ public class LibraryBackendClient {
         "/library/api/books",
         HttpMethod.GET,
         null,
-        new ParameterizedTypeReference<List<BookDto>>() {}
+        new ParameterizedTypeReference<List<BookDto>>() {
+        }
     ).getBody();
   }
 
@@ -46,7 +47,8 @@ public class LibraryBackendClient {
         "/library/api/users",
         HttpMethod.GET,
         null,
-        new ParameterizedTypeReference<List<UserDto>>() {}
+        new ParameterizedTypeReference<List<UserDto>>() {
+        }
     ).getBody();
   }
 
@@ -67,7 +69,8 @@ public class LibraryBackendClient {
         "/library/api/users/{userName}/loans",
         HttpMethod.GET,
         null,
-        new ParameterizedTypeReference<List<LoanDto>>() {},
+        new ParameterizedTypeReference<List<LoanDto>>() {
+        },
         userName
     ).getBody();
   }

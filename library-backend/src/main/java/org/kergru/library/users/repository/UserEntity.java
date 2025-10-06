@@ -1,6 +1,9 @@
 package org.kergru.library.users.repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "users")
@@ -14,15 +17,15 @@ public class UserEntity {
   private String username;
 
   @Column(name = "firstname", nullable = false)
-  private String firstname
-      ;
+  private String firstname;
   @Column(name = "lastname", nullable = false)
   private String lastname;
 
   @Column(name = "email", nullable = false, unique = true)
   private String email;
 
-  protected UserEntity() { }
+  protected UserEntity() {
+  }
 
   public UserEntity(Long id, String username, String firstname, String lastname, String email) {
     this.id = id;
@@ -32,21 +35,50 @@ public class UserEntity {
     this.email = email;
   }
 
-  public Long getId() { return id; }
-  public String getUsername() { return username; }
-  public String getFirstname() { return firstname; }
-  public String getLastname() { return lastname; }
-  public String getEmail() { return email; }
+  public Long getId() {
+    return id;
+  }
 
-  public void setId(Long id) { this.id = id; }
-/* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
+  public String getUsername() {
+    return username;
+  }
+
+  public String getFirstname() {
+    return firstname;
+  }
+
+  public String getLastname() {
+    return lastname;
+  }
+
+  public String getEmail() {
+    return email;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+  /* <<<<<<<<<<<<<<  ✨ Windsurf Command ⭐ >>>>>>>>>>>>>>>> */
+
   /**
    * Sets the userName of the user.
+   *
    * @param username the new userName of the user
    */
-/* <<<<<<<<<<  65a3122b-26f3-4a56-95f0-3bea84b2118b  >>>>>>>>>>> */
-  public void setUsername(String username) { this.username = username; }
-  public void setFirstname(String firstname) { this.firstname = firstname; }
-  public void setLastname(String lastname) { this.lastname = lastname; }
-  public void setEmail(String email) { this.email = email; }
+  /* <<<<<<<<<<  65a3122b-26f3-4a56-95f0-3bea84b2118b  >>>>>>>>>>> */
+  public void setUsername(String username) {
+    this.username = username;
+  }
+
+  public void setFirstname(String firstname) {
+    this.firstname = firstname;
+  }
+
+  public void setLastname(String lastname) {
+    this.lastname = lastname;
+  }
+
+  public void setEmail(String email) {
+    this.email = email;
+  }
 }

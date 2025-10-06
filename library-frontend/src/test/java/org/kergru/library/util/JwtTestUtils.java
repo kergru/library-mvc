@@ -1,60 +1,34 @@
 package org.kergru.library.util;
 
-import com.nimbusds.jose.*;
-import com.nimbusds.jose.crypto.RSASSASigner;
-import com.nimbusds.jose.jwk.*;
-import com.nimbusds.jwt.JWTClaimsSet;
-import com.nimbusds.jwt.SignedJWT;
-
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.util.Date;
+import java.time.Instant;
+import java.util.List;
+import java.util.Map;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.oauth2.core.oidc.OidcIdToken;
+import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
+import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 public class JwtTestUtils {
 
-  private static RSAKey rsaJwk;
-
-  static {
-    try {
-      KeyPairGenerator gen = KeyPairGenerator.getInstance("RSA");
-      gen.initialize(2048);
-      KeyPair keyPair = gen.generateKeyPair();
-
-      rsaJwk = new RSAKey.Builder((java.security.interfaces.RSAPublicKey) keyPair.getPublic())
-          .privateKey(keyPair.getPrivate())
-          .keyID("test-key")
-          .build();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
+  public static OidcUser mockOidcUserLibrarian(String username) {
+    Map<String, Object> claims = Map.of(
+        "sub", "123",
+        "preferred_username", username,
+        "realm_access", Map.of("roles", List.of("LIBRARIAN"))
+    );
+    OidcIdToken idToken = new OidcIdToken("token123", Instant.now(),
+        Instant.now().plusSeconds(3600), claims);
+    return new DefaultOidcUser(List.of(new SimpleGrantedAuthority("ROLE_LIBRARIAN")), idToken);
   }
 
-  public static String createJwt(String username) {
-    try {
-      JWTClaimsSet claims = new JWTClaimsSet.Builder()
-          .issuer("http://localhost:8085/realms/library")
-          .subject(username)
-          .claim("preferred_username", username)
-          .expirationTime(new Date(System.currentTimeMillis() + 3600_000)) // 1h gültig
-          .issueTime(new Date())
-          .build();
-
-      JWSHeader header = new JWSHeader.Builder(JWSAlgorithm.RS256)
-          .keyID(rsaJwk.getKeyID())
-          .type(JOSEObjectType.JWT)
-          .build();
-
-      SignedJWT signedJWT = new SignedJWT(header, claims);
-      signedJWT.sign(new RSASSASigner(rsaJwk.toPrivateKey()));
-
-      return signedJWT.serialize();
-    } catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  public static String getJwks() {
-    return new JWKSet(rsaJwk.toPublicJWK()).toJSONObject().toString();
+  public static OidcUser mockOidcUser(String username) {
+    Map<String, Object> claims = Map.of(
+        "sub", "123",
+        "preferred_username", username
+    );
+    OidcIdToken idToken = new OidcIdToken("token123", Instant.now(),
+        Instant.now().plusSeconds(3600), claims);
+    return new DefaultOidcUser(List.of(), idToken);
   }
 }
 

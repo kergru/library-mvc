@@ -2,7 +2,6 @@ package org.kergru.library.books.service;
 
 import java.util.List;
 import java.util.Optional;
-import org.kergru.library.books.repository.BookEntity;
 import org.kergru.library.books.repository.BookRepository;
 import org.kergru.library.books.repository.BookWithLoan;
 import org.kergru.library.model.BookDto;
@@ -37,9 +36,9 @@ public class BookService {
         b.getPages(),
         b.getDescription(),
         new LoanStatusDto(
-          b.getLoanId() != null,
-          b.getLoanId() != null ? b.getBorrowerId() : null,
-          b.getLoanId() != null ? b.getBorrowedAt() : null
+            b.getLoanId() != null,
+            b.getLoanId() != null ? b.getBorrowerId() : null,
+            b.getLoanId() != null ? b.getBorrowedAt() : null
         )
     );
   }

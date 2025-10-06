@@ -66,6 +66,10 @@ public class OAuth2LoginSecurityConfig {
       @Override
       public OidcUser loadUser(OidcUserRequest userRequest) {
         OidcUser oidcUser = super.loadUser(userRequest);
+
+        //log OidcUserService call
+        System.out.println("Response of OidcUserService.loadUser: " + oidcUser);
+
         Set<GrantedAuthority> authorities = new HashSet<>(oidcUser.getAuthorities());
 
         //Load user roles from realm_access in token
@@ -77,6 +81,9 @@ public class OAuth2LoginSecurityConfig {
               authorities.add(new SimpleGrantedAuthority("ROLE_" + role.toUpperCase()))
           );
         }
+
+        //log authorities
+        System.out.println("Authorities: " + authorities);
 
         return new CustomOidcUser(oidcUser, authorities);
       }
@@ -104,10 +111,13 @@ public class OAuth2LoginSecurityConfig {
     return successHandler;
   }
 
-  // Custom OidcUser implementation if you need to add custom fields or behavior
+  /**
+   * Custom OidcUser implementation if you need to add custom fields or behavior (Set preferred_username as username and roles as authorities)
+   */
   private static class CustomOidcUser extends org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser {
+
     public CustomOidcUser(OidcUser user, Set<GrantedAuthority> authorities) {
-      super(authorities, user.getIdToken(), user.getUserInfo());
+      super(authorities, user.getIdToken(), user.getUserInfo(), "preferred_username");
     }
   }
 }

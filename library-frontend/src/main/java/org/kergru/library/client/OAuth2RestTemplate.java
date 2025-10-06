@@ -10,7 +10,7 @@ import org.springframework.web.util.DefaultUriBuilderFactory;
 
 public class OAuth2RestTemplate extends RestTemplate {
 
-  public OAuth2RestTemplate (
+  public OAuth2RestTemplate(
       OAuth2AuthorizedClientManager authorizedClientManager,
       String backendBaseUrl) {
 

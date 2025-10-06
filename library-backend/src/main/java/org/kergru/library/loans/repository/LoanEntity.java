@@ -1,6 +1,12 @@
 package org.kergru.library.loans.repository;
 
-import jakarta.persistence.*;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
 import java.time.Instant;
 import org.kergru.library.books.repository.BookEntity;
 
@@ -35,16 +41,44 @@ public class LoanEntity {
     this.returnedAt = returnedAt;
   }
 
-  public Long getId() { return id; }
-  public Long getUserId() { return userId; }
-  public BookEntity getBook() { return book; }
-  public Instant getBorrowedAt() { return borrowedAt; }
-  public Instant getReturnedAt() { return returnedAt; }
+  public Long getId() {
+    return id;
+  }
 
-  public void setId(Long id) { this.id = id; }
-  public void setUserId(Long userId) { this.userId = userId; }
-  public void setBook(BookEntity Book) { this.book  = book; }
-  public void setBorrowedAt(Instant borrowedAt) { this.borrowedAt = borrowedAt; }
-  public void setReturnedAt(Instant returnedAt) { this.returnedAt = returnedAt; }
+  public Long getUserId() {
+    return userId;
+  }
+
+  public BookEntity getBook() {
+    return book;
+  }
+
+  public Instant getBorrowedAt() {
+    return borrowedAt;
+  }
+
+  public Instant getReturnedAt() {
+    return returnedAt;
+  }
+
+  public void setId(Long id) {
+    this.id = id;
+  }
+
+  public void setUserId(Long userId) {
+    this.userId = userId;
+  }
+
+  public void setBook(BookEntity Book) {
+    this.book = book;
+  }
+
+  public void setBorrowedAt(Instant borrowedAt) {
+    this.borrowedAt = borrowedAt;
+  }
+
+  public void setReturnedAt(Instant returnedAt) {
+    this.returnedAt = returnedAt;
+  }
 }
 

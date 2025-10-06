@@ -11,7 +11,7 @@ import org.springframework.security.oauth2.client.web.DefaultOAuth2AuthorizedCli
 import org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository;
 
 @Configuration
-public class  OAuth2ClientConfig {
+public class OAuth2ClientConfig {
 
   @Bean
   public OAuth2RestTemplate oauth2RestTemplate(

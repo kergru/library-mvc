@@ -1,12 +1,11 @@
 package org.kergru.library.users.service;
 
 import java.util.List;
+import java.util.Optional;
 import org.kergru.library.model.UserDto;
 import org.kergru.library.users.repository.UserEntity;
 import org.kergru.library.users.repository.UserRepository;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 @Service
 public class UserService {

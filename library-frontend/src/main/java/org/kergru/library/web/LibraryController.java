@@ -43,7 +43,7 @@ public class LibraryController {
   @GetMapping("/books")
   public String listAllBooks(Model model) {
     model.addAttribute("books", libraryService.getAllBooks());
-    return("books/list");
+    return ("books/list");
   }
 
   @GetMapping("/books/{isbn}")
