@@ -41,7 +41,7 @@ Project uses Keycloak as OAuth2 provider and MySQL as database which will be sta
 |                      | **Data / Service Layer** | `@Service`, `@Repository`, JPA entities                                                                                                                               | Business logic, database access, and persistence                                |
 |                      | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                                        | Defines JWKS URI and other security properties                                  |
 
-## Flow
+## Architecture / Flow Diagram
 
 ```mermaid
 flowchart TB
