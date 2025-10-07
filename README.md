@@ -88,48 +88,8 @@ flowchart TB
     AUTH -->|" 9️⃣ /.well-known/jwks.json (Public Keys) "| BACKEND
     BACKEND -->|" 🔟 Provides JSON-Data (books, users) "| FRONTEND
     FRONTEND -->|" 🏁 Renders HTML (Thymeleaf) "| U1
+
 %% --- STYLES ---
     classDef comp fill: #f6f8fa, stroke: #ccc, stroke-width: 1px, rx: 8px, ry: 8px;
-    class FRONTEND, BACKEND, AUTH comp;
-
-```
-
-## Architecture
-
-```mermaid
-flowchart TB
-%% ===== MODULES =====
-    subgraph FRONTEND["💻 library-frontend (Spring Boot OAuth2 Client + Thymeleaf UI)"]
-        FE1["OIDC Login (Authorization Code Flow)"]
-        FE2["Thymeleaf Web UI"]
-        FE3["RestTemplate (with Bearer Token)"]
-    end
-
-    subgraph BACKEND["⚙️ library-backend (Spring Boot Resource Server)"]
-        BE1["JWT Validation (NimbusJwtDecoder)"]
-        BE2["Protected REST-Endpoints\n/api/books, /api/users"]
-    end
-
-    subgraph AUTH["🛡️ Authorization Server (Keycloak)"]
-        AS1["/authorize"]
-        AS2["/token"]
-        AS3["/.well-known/jwks.json"]
-    end
-
-    subgraph USER["👤 Benutzer / Browser"]
-        U1["Browser / Web Client"]
-    end
-
-%% ===== CONNECTIONS =====
-    U1 -->|" HTTP: GET /books "| FRONTEND
-    FRONTEND -->|" OIDC Redirect: /authorize "| AUTH
-    AUTH -->|" Authorization Code + Tokens "| FRONTEND
-    FRONTEND -->|" REST-Call: GET /api/books\nAuthorization: Bearer <token> "| BACKEND
-    BACKEND -->|" JWT Prüfung über JWKS "| AUTH
-    BACKEND -->|" JSON Response (Bücher etc.) "| FRONTEND
-    FRONTEND -->|" Rendert HTML (Thymeleaf) "| U1
-%% ===== STYLES =====
-    classDef comp fill: #f6f8fa, stroke: #aaa, stroke-width: 1px, rx: 8px, ry: 8px;
-    class FRONTEND, BACKEND, AUTH comp;
-
+    class FRONTEND,BACKEND,AUTH comp;
 ```

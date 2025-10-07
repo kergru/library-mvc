@@ -34,6 +34,7 @@ public class OAuth2LoginSecurityConfig {
       HttpSecurity http,
       ClientRegistrationRepository clientRegistrationRepository) throws Exception {
 
+    //browser-to-service communication with session cookie, csrf per default enabled
     http
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/", "/login", "/public/**").permitAll()

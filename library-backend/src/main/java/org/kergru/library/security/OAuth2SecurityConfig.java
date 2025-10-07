@@ -17,34 +17,35 @@ import org.springframework.security.oauth2.server.resource.authentication.JwtGra
 import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 
+/**
+ * Configures the security filter chain for OAuth2 Resource Server with JWT authentication. This configuration sets up the application as an OAuth2 Resource Server that validates
+ * JWT (JSON Web Token) access tokens. The JWT configuration is loaded from application properties/YAML, including:
+ * <ul>
+ *   <li>issuer-uri - The URI of the authorization server that issues the JWTs</li>
+ *   <li>jwk-set-uri - The URI to fetch the public keys for JWT signature validation</li>
+ *   <li>jws-algorithms - The allowed signing algorithms for the JWTs</li>
+ * </ul>
+ * <p>
+ * The OAuth2 Resource Server is configured using the default JWT handling provided by
+ * Spring Security, which includes automatic validation of:
+ * <ul>
+ *   <li>Token signature using the authorization server's public keys</li>
+ *   <li>Token expiration time</li>
+ *   <li>Token issuer claim</li>
+ * </ul>
+ */
 @Configuration
 @EnableWebSecurity
 @EnableMethodSecurity
 public class OAuth2SecurityConfig {
 
-  /**
-   * Configures the security filter chain for OAuth2 Resource Server with JWT authentication. This configuration sets up the application as an OAuth2 Resource Server that validates
-   * JWT (JSON Web Token) access tokens. The JWT configuration is loaded from application properties/YAML, including:
-   * <ul>
-   *   <li>issuer-uri - The URI of the authorization server that issues the JWTs</li>
-   *   <li>jwk-set-uri - The URI to fetch the public keys for JWT signature validation</li>
-   *   <li>jws-algorithms - The allowed signing algorithms for the JWTs</li>
-   * </ul>
-   * <p>
-   * The OAuth2 Resource Server is configured using the default JWT handling provided by
-   * Spring Security, which includes automatic validation of:
-   * <ul>
-   *   <li>Token signature using the authorization server's public keys</li>
-   *   <li>Token expiration time</li>
-   *   <li>Token issuer claim</li>
-   * </ul>
-   */
   @Bean
   public SecurityFilterChain securityFilterChain(
       HttpSecurity http,
       JwtAuthenticationConverter jwtAuthenticationConverter) throws Exception {
+
     return http
-        .csrf(AbstractHttpConfigurer::disable)
+        .csrf(AbstractHttpConfigurer::disable) //server-to-server communication, token secured
         .addFilterAfter(new JwtLoggingFilter(), BearerTokenAuthenticationFilter.class)
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/actuator/**").permitAll()
