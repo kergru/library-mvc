@@ -1,12 +1,4 @@
-group = 'org.kergru'
-version = '0.0.1-SNAPSHOT'
-description = 'Library Client'
-
-java {
-    toolchain {
-        languageVersion = JavaLanguageVersion.of(21)
-    }
-}
+description = 'Spring MVC Library Client with OAuth2 Client'
 
 apply plugin: 'org.springframework.boot'
 
@@ -15,9 +7,10 @@ dependencies {
 
     implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-web'
-    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
     implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
     implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+    // OAuth2 Client
+    implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
 
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'org.springframework.security:spring-security-test'
@@ -25,7 +18,6 @@ dependencies {
     // Testcontainers
     testImplementation 'org.springframework.boot:spring-boot-testcontainers'
     testImplementation 'org.testcontainers:junit-jupiter:1.21.3'
-    testImplementation 'com.github.dasniko:testcontainers-keycloak:3.8.0'
 
     // WireMock
     testImplementation "org.springframework.cloud:spring-cloud-contract-wiremock"
@@ -33,4 +25,3 @@ dependencies {
     testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
 }
-

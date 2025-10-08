@@ -6,72 +6,61 @@ import org.kergru.library.model.BookDto;
 import org.kergru.library.model.LoanDto;
 import org.kergru.library.model.UserDto;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
-import org.springframework.web.client.RestTemplate;
+import org.springframework.web.client.RestClient;
 
 @Service
 public class LibraryBackendClient {
 
-  private final RestTemplate restTemplate;
+  private final RestClient restClient;
 
-  public LibraryBackendClient(RestTemplate oauth2RestTemplate) {
-    this.restTemplate = oauth2RestTemplate;
+  public LibraryBackendClient(RestClient oauth2RestClient) {
+    this.restClient = oauth2RestClient;
   }
 
   public List<BookDto> getAllBooks() {
-    return restTemplate.exchange(
-        "/library/api/books",
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<List<BookDto>>() {
-        }
-    ).getBody();
+    return restClient.get()
+        .uri("/library/api/books")
+        .retrieve()
+        .body(new ParameterizedTypeReference<>() {});
   }
 
   public Optional<BookDto> getBookByIsbn(String isbn) {
     try {
-      BookDto book = restTemplate.getForObject(
-          "/library/api/books/{isbn}", BookDto.class, isbn
-      );
+      BookDto book = restClient.get()
+          .uri("/library/api/books/{isbn}", isbn)
+          .retrieve()
+          .body(BookDto.class);
       return Optional.ofNullable(book);
     } catch (HttpClientErrorException.NotFound e) {
-      // 404 vom Backend → Optional.empty
       return Optional.empty();
     }
   }
 
   public List<UserDto> getAllUsers() {
-    return restTemplate.exchange(
-        "/library/api/users",
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<List<UserDto>>() {
-        }
-    ).getBody();
+    return restClient.get()
+        .uri("/library/api/users")
+        .retrieve()
+        .body(new ParameterizedTypeReference<>() {});
   }
 
   public Optional<UserDto> getUser(String userName) {
     try {
-      UserDto user = restTemplate.getForObject(
-          "/library/api/users/{userName}", UserDto.class, userName
-      );
+      UserDto user = restClient.get()
+          .uri("/library/api/users/{userName}", userName)
+          .retrieve()
+          .body(UserDto.class);
       return Optional.ofNullable(user);
     } catch (HttpClientErrorException.NotFound e) {
-      // 404 vom Backend → Optional.empty
       return Optional.empty();
     }
   }
 
   public List<LoanDto> getBorrowedBooksOfUser(String userName) {
-    return restTemplate.exchange(
-        "/library/api/users/{userName}/loans",
-        HttpMethod.GET,
-        null,
-        new ParameterizedTypeReference<List<LoanDto>>() {
-        },
-        userName
-    ).getBody();
+    return restClient.get()
+        .uri("/library/api/users/{userName}/loans", userName)
+        .retrieve()
+        .body(new ParameterizedTypeReference<>() {});
   }
 }
