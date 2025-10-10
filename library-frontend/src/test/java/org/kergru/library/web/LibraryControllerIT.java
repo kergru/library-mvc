@@ -29,7 +29,7 @@ public class LibraryControllerIT {
   private MockMvc mockMvc;
 
   @Test
-  void expectListBooksReturnsBook() throws Exception {
+  void expectSearchBooksReturnsBook() throws Exception {
     mockMvc.perform(get("/library/ui/books")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))
         .andExpect(status().isOk())
@@ -37,7 +37,7 @@ public class LibraryControllerIT {
   }
 
   @Test
-  void testShowBookByIsbn() throws Exception {
+  void testGetBookByIsbn() throws Exception {
     mockMvc.perform(get("/library/ui/books/12345")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))
         .andExpect(status().isOk())

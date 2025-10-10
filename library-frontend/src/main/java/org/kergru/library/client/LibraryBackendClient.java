@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import org.kergru.library.model.BookDto;
 import org.kergru.library.model.LoanDto;
+import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
@@ -19,13 +20,31 @@ public class LibraryBackendClient {
     this.restClient = oauth2RestClient;
   }
 
-  public List<BookDto> getAllBooks() {
+  /**
+   * Searches books from backend by given search criteria.
+   * Using the token relay pattern.
+   */
+  public PageResponseDto<BookDto> searchBooks(String searchString, int page, int size, String sortBy) {
     return restClient.get()
-        .uri("/library/api/books")
+        .uri(uriBuilder -> {
+          var builder = uriBuilder
+              .path("/library/api/books")
+              .queryParam("page", page)
+              .queryParam("size", size)
+              .queryParam("sort", sortBy);
+          if (searchString != null && !searchString.isEmpty()) {
+            builder.queryParam("searchString", searchString);
+          }
+          return builder.build();
+        })
         .retrieve()
         .body(new ParameterizedTypeReference<>() {});
   }
 
+  /**
+   * Retrieves book by isbn from backend.
+   * Using the token relay pattern.
+   */
   public Optional<BookDto> getBookByIsbn(String isbn) {
     try {
       BookDto book = restClient.get()
@@ -38,13 +57,31 @@ public class LibraryBackendClient {
     }
   }
 
-  public List<UserDto> getAllUsers() {
+  /**
+   * Searches users from backend by given search criteria.
+   * Using the token relay pattern.
+   */
+  public PageResponseDto<UserDto> searchUsers(String searchString, int page, int size, String sortBy) {
     return restClient.get()
-        .uri("/library/api/users")
+        .uri(uriBuilder -> {
+          var builder = uriBuilder
+              .path("/library/api/users")
+              .queryParam("page", page)
+              .queryParam("size", size)
+              .queryParam("sort", sortBy);
+          if (searchString != null && !searchString.isEmpty()) {
+            builder.queryParam("searchString", searchString);
+          }
+          return builder.build();
+        })
         .retrieve()
         .body(new ParameterizedTypeReference<>() {});
   }
 
+  /**
+   * Retrieves user by username from backend.
+   * Using the token relay pattern.
+   */
   public Optional<UserDto> getUser(String userName) {
     try {
       UserDto user = restClient.get()
@@ -57,6 +94,10 @@ public class LibraryBackendClient {
     }
   }
 
+  /**
+   * Retrieves borrowed books of user from backend.
+   * Using the token relay pattern.
+   */
   public List<LoanDto> getBorrowedBooksOfUser(String userName) {
     return restClient.get()
         .uri("/library/api/users/{userName}/loans", userName)

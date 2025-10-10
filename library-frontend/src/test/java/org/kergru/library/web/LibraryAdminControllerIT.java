@@ -32,7 +32,7 @@ public class LibraryAdminControllerIT {
   private MockMvc mockMvc;
 
   @Test
-  void expectListAllUsersWithRoleLibrarianShouldReturnUsers() throws Exception {
+  void expectSearchUsersWithRoleLibrarianShouldReturnUsers() throws Exception {
 
     mockMvc.perform(get("/library/ui/admin/users")
             .with(oauth2Login().oauth2User(mockOidcUserLibrarian("librarian"))))
@@ -43,7 +43,7 @@ public class LibraryAdminControllerIT {
   }
 
   @Test
-  void expectListAllUsersWithNotRoleLibrarianShouldReturnForbidden() throws Exception {
+  void expectSearchUsersWithNotRoleLibrarianShouldReturnForbidden() throws Exception {
 
     mockMvc.perform(get("/library/ui/admin/users")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))

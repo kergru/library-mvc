@@ -2,7 +2,7 @@ package org.kergru.library.books.repository;
 
 import java.time.Instant;
 
-public interface BookWithLoan {
+public interface BookWithLoanProjection {
 
   String getIsbn();
 
