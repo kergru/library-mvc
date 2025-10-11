@@ -15,6 +15,11 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+/**
+ * Logging filter for incoming requests.
+ * Logs the incoming request URI and the authorization header.
+ * Logs the JWT token claims if available.
+ */
 @Component
 public class JwtLoggingFilter extends OncePerRequestFilter {
 

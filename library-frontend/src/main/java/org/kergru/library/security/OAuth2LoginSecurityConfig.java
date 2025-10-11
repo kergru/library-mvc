@@ -20,6 +20,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.thymeleaf.extras.springsecurity6.dialect.SpringSecurityDialect;
 
+/**
+ * Configuration for OAuth2 login security.
+ * Defines a SecurityFilterChain bean with OAuth2 login configuration.
+ */
 @Configuration
 @EnableWebSecurity
 public class OAuth2LoginSecurityConfig {
@@ -43,7 +47,7 @@ public class OAuth2LoginSecurityConfig {
         )
         .oauth2Login(oauth2 -> oauth2
             .tokenEndpoint(token -> token
-                .accessTokenResponseClient(new LoggingAccessTokenResponseClient()))
+                .accessTokenResponseClient(new LoggingAccessTokenResponseClient())) // add custom access token response client for logging
             .userInfoEndpoint(userInfo -> userInfo
                 .oidcUserService(this.oidcUserService())
             )

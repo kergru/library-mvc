@@ -60,7 +60,7 @@ public class OAuth2SecurityConfig {
   }
 
   /**
-   * Keycloak realm roles converter
+   * Keycloak realm roles converter. Maps realm roles to Spring Security authorities.
    */
   @Bean
   public JwtAuthenticationConverter jwtAuthenticationConverter() {

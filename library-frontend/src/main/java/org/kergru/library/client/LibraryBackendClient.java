@@ -11,6 +11,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
 
+/**
+ * OAuth2 client for the library backend.
+ * Uses the token relay pattern which is set up in OAuth2RestClientConfig by adding OAuth2ClientHttpRequestInterceptor.
+ *
+ * @see OAuth2RestClientConfig
+ */
 @Service
 public class LibraryBackendClient {
 
@@ -21,8 +27,7 @@ public class LibraryBackendClient {
   }
 
   /**
-   * Searches books from backend by given search criteria.
-   * Using the token relay pattern.
+   * Searches books from backend using pagination.
    */
   public PageResponseDto<BookDto> searchBooks(String searchString, int page, int size, String sortBy) {
     return restClient.get()
@@ -43,7 +48,6 @@ public class LibraryBackendClient {
 
   /**
    * Retrieves book by isbn from backend.
-   * Using the token relay pattern.
    */
   public Optional<BookDto> getBookByIsbn(String isbn) {
     try {
@@ -58,8 +62,7 @@ public class LibraryBackendClient {
   }
 
   /**
-   * Searches users from backend by given search criteria.
-   * Using the token relay pattern.
+   * Searches users from backend using pagination.
    */
   public PageResponseDto<UserDto> searchUsers(String searchString, int page, int size, String sortBy) {
     return restClient.get()
@@ -80,7 +83,6 @@ public class LibraryBackendClient {
 
   /**
    * Retrieves user by username from backend.
-   * Using the token relay pattern.
    */
   public Optional<UserDto> getUser(String userName) {
     try {
@@ -96,7 +98,6 @@ public class LibraryBackendClient {
 
   /**
    * Retrieves borrowed books of user from backend.
-   * Using the token relay pattern.
    */
   public List<LoanDto> getBorrowedBooksOfUser(String userName) {
     return restClient.get()
