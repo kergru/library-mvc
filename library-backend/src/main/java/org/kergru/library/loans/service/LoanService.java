@@ -64,7 +64,6 @@ public class LoanService {
   }
 
   private boolean isBorrowed(BookEntity book) {
-    System.out.println(loanRepository.findAll());
     return loanRepository.findByBookIdAndReturnedAtIsNull(book.getId()).isPresent();
   }
 
