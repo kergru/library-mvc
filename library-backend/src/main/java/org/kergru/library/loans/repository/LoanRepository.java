@@ -11,6 +11,6 @@ public interface LoanRepository extends JpaRepository<LoanEntity, Long> {
   @Query("SELECT l FROM LoanEntity l JOIN FETCH l.book WHERE l.userId = :userId")
   List<LoanEntity> findByUserId(@Param("userId") Long userId);
 
-  Optional<LoanEntity> findByBookIdAndReturnedAtIsNull(Long bookId);
+  boolean existsByBookIdAndReturnedAtIsNull(Long bookId);
 }
 
