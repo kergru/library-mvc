@@ -6,6 +6,8 @@ import org.kergru.library.model.BookDto;
 import org.kergru.library.model.LoanDto;
 import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
@@ -19,6 +21,8 @@ import org.springframework.web.client.RestClient;
  */
 @Service
 public class LibraryBackendClient {
+
+  private final Logger logger = LoggerFactory.getLogger(this.getClass());
 
   private final RestClient restClient;
 
@@ -104,5 +108,34 @@ public class LibraryBackendClient {
         .uri("/library/api/users/{userName}/loans", userName)
         .retrieve()
         .body(new ParameterizedTypeReference<>() {});
+  }
+
+  /**
+   * Borrows a book to a user. Endpoint is only available for the user himself.
+   */
+  public LoanDto borrowBook(String isbn, String userName) {
+    try {
+      return restClient.post()
+          .uri("/library/api/users/{userName}/loans", userName)
+          .body(isbn)
+          .retrieve()
+          .body(LoanDto.class);
+    } catch (HttpClientErrorException.Conflict e) {
+      logger.error("Failed to borrow book, book is already borrowed", e);
+      throw new BookAlreadyBorrowedException(isbn);
+    }
+  }
+
+  public void returnBook(Long loanId, String userName) {
+    restClient.delete()
+        .uri("/library/api/users/{userName}/loans/{loanId}", userName, loanId)
+        .retrieve()
+        .toBodilessEntity();
+  }
+
+  public static class BookAlreadyBorrowedException extends RuntimeException {
+    public BookAlreadyBorrowedException(String isbn) {
+      super("Book with isbn " + isbn + " is already borrowed");
+    }
   }
 }

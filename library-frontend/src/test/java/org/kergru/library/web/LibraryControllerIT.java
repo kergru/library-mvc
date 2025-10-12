@@ -1,8 +1,12 @@
 package org.kergru.library.web;
 
+import static org.hamcrest.Matchers.containsString;
 import static org.kergru.library.util.JwtTestUtils.mockOidcUser;
+import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.oauth2Login;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -33,23 +37,50 @@ public class LibraryControllerIT {
     mockMvc.perform(get("/library/ui/books")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))
         .andExpect(status().isOk())
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("The Great Gatsby")));
+        .andExpect(content().string(containsString("The Great Gatsby")));
   }
 
   @Test
-  void testGetBookByIsbn() throws Exception {
+  void expectGetBookByIsbnReturnsBook() throws Exception {
     mockMvc.perform(get("/library/ui/books/12345")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))
         .andExpect(status().isOk())
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("The Great Gatsby")));
+        .andExpect(content().string(containsString("The Great Gatsby")));
   }
 
   @Test
-  void testMeEndpoint() throws Exception {
+  void expectGetMeReturnsUser() throws Exception {
     mockMvc.perform(get("/library/ui/me")
             .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1"))))
         .andExpect(status().isOk())
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("demo_user_1")))
-        .andExpect(content().string(org.hamcrest.Matchers.containsString("The Great Gatsby")));
+        .andExpect(content().string(containsString("demo_user_1")))
+        .andExpect(content().string(containsString("The Great Gatsby")));
+  }
+
+  @Test
+  void expectBorrowBookReturnsLoan() throws Exception {
+    mockMvc.perform(post("/library/ui/me/borrowBook/success-isbn")
+            .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1")))
+            .with(csrf()) //send csrf token
+        )
+        .andExpect(status().isOk());
+  }
+
+  @Test
+  void expectBorrowAlreadyBorrowedBookReturnsError() throws Exception {
+    mockMvc.perform(post("/library/ui/me/borrowBook/conflict-isbn")
+            .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1")))
+            .with(csrf()) //send csrf token
+        )
+        .andExpect(status().isConflict());
+  }
+
+  @Test
+  void expectReturnBookReturnsOk() throws Exception {
+    mockMvc.perform(post("/library/ui/me/returnBook/1")
+            .with(oauth2Login().oauth2User(mockOidcUser("demo_user_1")))
+            .with(csrf()) //send csrf token
+        )
+        .andExpect(status().isOk());
   }
 }

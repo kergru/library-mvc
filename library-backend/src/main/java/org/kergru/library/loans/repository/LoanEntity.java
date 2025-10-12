@@ -3,6 +3,8 @@ package org.kergru.library.loans.repository;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -15,9 +17,9 @@ import org.kergru.library.books.repository.BookEntity;
 public class LoanEntity {
 
   @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   private Long id;
 
-  // Für Einfachheit speichern wir nur die User-ID
   @Column(name = "user_id", nullable = false)
   private Long userId;
 
@@ -31,7 +33,7 @@ public class LoanEntity {
   @Column
   private Instant returnedAt; // null => aktuell ausgeliehen
 
-  protected LoanEntity() { /* JPA */ }
+  public LoanEntity() {}
 
   public LoanEntity(Long id, Long userId, BookEntity book, Instant borrowedAt, Instant returnedAt) {
     this.id = id;
@@ -69,7 +71,7 @@ public class LoanEntity {
     this.userId = userId;
   }
 
-  public void setBook(BookEntity Book) {
+  public void setBook(BookEntity book) {
     this.book = book;
   }
 

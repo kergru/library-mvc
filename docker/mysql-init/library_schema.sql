@@ -14,7 +14,7 @@ USE library;
 -- users
 CREATE TABLE users
 (
-    id        BIGINT       NOT NULL,
+    id        BIGINT       NOT NULL AUTO_INCREMENT,
     username  VARCHAR(100) NOT NULL,
     firstname VARCHAR(100) NOT NULL,
     lastname  VARCHAR(100) NOT NULL,
@@ -27,30 +27,30 @@ CREATE TABLE users
 -- books
 CREATE TABLE books
 (
-    id          BIGINT       NOT NULL,
-    isbn        VARCHAR(32)  NOT NULL,
-    title       VARCHAR(255) NOT NULL,
-    author      VARCHAR(255) NOT NULL,
-    publishedAt INT          NOT NULL,
-    publisher   VARCHAR(255) NOT NULL,
-    language    VARCHAR(32)  NOT NULL,
-    description TEXT         NOT NULL,
-    pages       INT          NOT NULL,
+    id           BIGINT       NOT NULL AUTO_INCREMENT,
+    isbn         VARCHAR(32)  NOT NULL,
+    title        VARCHAR(255) NOT NULL,
+    author       VARCHAR(255) NOT NULL,
+    published_at INT          NOT NULL,
+    publisher    VARCHAR(255) NOT NULL,
+    language     VARCHAR(32)  NOT NULL,
+    description  TEXT         NOT NULL,
+    pages        INT          NOT NULL,
     PRIMARY KEY (id),
-    KEY         idx_books_isbn(isbn)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+    KEY          idx_books_isbn(isbn)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- loans
 CREATE TABLE loans
 (
-    id         BIGINT       NOT NULL,
-    user_id    BIGINT       NOT NULL,
-    book_id    BIGINT       NOT NULL,
-    borrowedAt TIMESTAMP(6) NOT NULL,
-    returnedAt TIMESTAMP(6) NULL,
+    id          BIGINT       NOT NULL AUTO_INCREMENT,
+    user_id     BIGINT       NOT NULL,
+    book_id     BIGINT       NOT NULL,
+    borrowed_at TIMESTAMP(6) NOT NULL,
+    returned_at TIMESTAMP(6) NULL,
     PRIMARY KEY (id),
-    KEY        idx_loans_user(user_id),
-    KEY        idx_loans_book(book_id),
+    KEY         idx_loans_user(user_id),
+    KEY         idx_loans_book(book_id),
     CONSTRAINT fk_loans_user FOREIGN KEY (user_id) REFERENCES users (id),
     CONSTRAINT fk_loans_book FOREIGN KEY (book_id) REFERENCES books (id)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
@@ -64,7 +64,7 @@ VALUES (1, 'demo_user_1', 'Demo', 'Eins', 'demo1@example.test'),
        (4, 'librarian', 'The', 'Librarian', 'librarian@example.test');
 
 -- books
-INSERT INTO books (id, isbn, title, author, publishedAt, publisher, language, description, pages)
+INSERT INTO books (id, isbn, title, author, published_at, publisher, language, description, pages)
 VALUES (1001, '9780132350884', 'Clean Code', 'Robert C. Martin', 2008, 'Prentice Hall', 'EN', 'Beschreibung Clean Code', 464),
        (1002, '9780134685991', 'Effective Java', 'Joshua Bloch', 2018, 'Addison-Wesley', 'EN', 'Beschreibung Effective Java', 416),
        (1003, '9780201633610', 'Design Patterns', 'Gamma; Helm; Johnson; Vlissides', 1994, 'Addison-Wesley', 'EN', 'Beschreibung Design Patterns', 395),
@@ -78,7 +78,7 @@ VALUES (1001, '9780132350884', 'Clean Code', 'Robert C. Martin', 2008, 'Prentice
 
 -- loans
 -- Einige aktive Ausleihen (returnedAt IS NULL) + eine zurückgegebene
-INSERT INTO loans (id, user_id, book_id, borrowedAt, returnedAt)
+INSERT INTO loans (id, user_id, book_id, borrowed_at, returned_at)
 VALUES (1, 1, 1001, DATE_SUB(NOW(6), INTERVAL 5 DAY), NULL),                               -- aktiv: demo_user_1 -> Clean Code
        (2, 2, 1003, DATE_SUB(NOW(6), INTERVAL 2 DAY), NULL),                               -- aktiv: demo_user_2 -> Design Patterns
        (3, 1, 1005, DATE_SUB(NOW(6), INTERVAL 20 DAY), DATE_SUB(NOW(6), INTERVAL 10 DAY)), -- zurückgegeben

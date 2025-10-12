@@ -2,6 +2,7 @@ package org.kergru.library.books.service;
 
 import java.util.Optional;
 import java.util.stream.Collectors;
+import org.kergru.library.books.repository.BookEntity;
 import org.kergru.library.books.repository.BookRepository;
 import org.kergru.library.books.repository.BookWithLoanProjection;
 import org.kergru.library.model.BookDto;
@@ -27,7 +28,7 @@ public class BookService {
         (StringUtils.hasText(searchString) ? searchString : null),
         PageRequest.of(page, size, Sort.by(sortBy)));
     return new PageResponseDto<>(
-        bookPage.getContent().stream().map(BookService::toDto).collect(Collectors.toList()),
+        bookPage.getContent().stream().map(this::toDto).collect(Collectors.toList()),
         bookPage.getNumber(),
         bookPage.getSize(),
         bookPage.getTotalPages(),
@@ -40,10 +41,24 @@ public class BookService {
   }
 
   public Optional<BookDto> getBook(String isbn) {
-    return bookRepository.findByIsbnWithLoan(isbn).map(BookService::toDto);
+    return bookRepository.findByIsbnWithLoan(isbn).map(this::toDto);
   }
 
-  public static BookDto toDto(BookWithLoanProjection b) {
+  public static BookDto toDto(BookEntity b) {
+    return new BookDto(
+        b.getIsbn(),
+        b.getTitle(),
+        b.getAuthor(),
+        b.getPublishedAt(),
+        b.getPublisher(),
+        b.getLanguage(),
+        b.getPages(),
+        b.getDescription(),
+        null
+    );
+  }
+
+  private BookDto toDto(BookWithLoanProjection b) {
     return new BookDto(
         b.getIsbn(),
         b.getTitle(),
@@ -54,7 +69,7 @@ public class BookService {
         b.getPages(),
         b.getDescription(),
         new LoanStatusDto(
-            b.getLoanId() != null,
+            b.getLoanId() == null,
             b.getLoanId() != null ? b.getBorrowerId() : null,
             b.getLoanId() != null ? b.getBorrowedAt() : null
         )

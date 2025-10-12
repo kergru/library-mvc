@@ -9,6 +9,8 @@ import org.springframework.data.repository.query.Param;
 
 public interface BookRepository extends JpaRepository<BookEntity, Long> {
 
+  Optional<BookEntity> findByIsbn(String isbn);
+
   @Query("""
     SELECT
         b.id as id,
@@ -21,8 +23,8 @@ public interface BookRepository extends JpaRepository<BookEntity, Long> {
         b.description as description,
         b.pages as pages,
         l.id as loanId,
-        l.borrowedAt as borrowedAt,
-        l.userId as borrowerId
+        l.borrowedAt as borrowed_at,
+        l.userId as borrower_id
     FROM BookEntity b
     LEFT JOIN LoanEntity l ON b.id = l.book.id AND l.returnedAt IS NULL
     WHERE b.isbn = :isbn

@@ -60,4 +60,18 @@ public class LibraryService {
   public List<LoanDto> getBorrowedBooksOfUser(String userName) {
     return backendClient.getBorrowedBooksOfUser(userName);
   }
+
+  /**
+   * Borrows a book to a user. Endpoint is only available for the user himself.
+   */
+  public LoanDto borrowBook(String isbn, String userName) {
+    return backendClient.borrowBook(isbn, userName);
+  }
+
+  /**
+   * Returns a book to library. Endpoint is only available for the user himself.
+   */
+  public void returnBook(Long loanId, String userName) {
+    backendClient.returnBook(loanId, userName);
+  }
 }
