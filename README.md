@@ -97,12 +97,12 @@ flowchart TB
 ## OAuth Flow Diagram
 ```mermaid
 sequenceDiagram
-    participant User (Browser)
-    participant Frontend as Library Frontend (OAuth2Client, Thymeleaf)
+    participant User
+    participant Frontend as Library Frontend (OAuth2 Client, Thymeleaf)
     participant AuthServer as Keycloak Auth Server
     participant Backend as Library Backend (Resource Server)
 
-    User->>Frontend: 1. GET / (no session)
+    User->>Frontend: 1. Login / (no session)
     Frontend->>User: 2. 302 Redirect to /oauth2/authorization/keycloak
     User->>AuthServer: 3. GET /auth (with client_id, redirect_uri, response_type=code)
     Note right of User: User enters credentials
@@ -110,13 +110,16 @@ sequenceDiagram
     User->>Frontend: 5. GET /login/oauth2/code/keycloak?code=...
     Frontend->>AuthServer: 6. Exchange code for tokens
     AuthServer->>Frontend: 7. {access_token, refresh_token, id_token}
-    Frontend->>User: 8. 302 to / + Set-Cookie: JSESSIONID=...
+    Frontend->>User: 8. Display protected page + Set-Cookie: JSESSIONID=...
 
-    User->>Frontend: 9. GET /protected/resource (Cookie: JSESSIONID=...)
+    User->>Frontend: 9. Request another protected page (Cookie: JSESSIONID=...)
     Note right of Frontend: Retrieve access_token from SecurityContext
-    Frontend->>Backend: 10. GET /api/resource (Authorization: Bearer <access_token>)
+
+    Frontend->>+Frontend: 14. Get access_token from session
+    Frontend->>Backend: 10. Request protected resource (Authorization: Bearer <access_token>)
     Backend->>AuthServer: 11. Validate token
     AuthServer->>Backend: 12. Token info (valid)
-    Backend->>Frontend: 13. 200 OK (data)
-    Frontend->>User: 14. Render protected content
+    Backend->>Frontend: 13. Send protected data
+    Frontend->>+Frontend: 19. Render Thymeleaf template
+    Frontend-->>-User: 20. Display protected page
 ```
