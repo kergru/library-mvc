@@ -41,7 +41,7 @@ Project uses Keycloak as OAuth2 provider and MySQL as database which will be sta
 |                      | **Data / Service Layer** | `@Service`, `@Repository`, JPA entities                                                                                                                               | Business logic, database access, and persistence                                |
 |                      | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                                        | Defines JWKS URI and other security properties                                  |
 
-## Architecture / Flow Diagram
+## Architecture Diagram
 
 ```mermaid
 flowchart TB
@@ -92,4 +92,27 @@ flowchart TB
 %% --- STYLES ---
     classDef comp fill: #f6f8fa, stroke: #ccc, stroke-width: 1px, rx: 8px, ry: 8px;
     class FRONTEND,BACKEND,AUTH comp;
+```
+
+## OAuth Flow Diagram
+```mermaid
+sequenceDiagram
+    participant User as User
+    participant Frontend as Library Frontend (Thymeleaf)
+    participant AuthServer as Keycloak Auth Server
+    participant Backend as Library Backend (Resource Server)
+
+    User->>Frontend: 1. Access application
+    Frontend->>AuthServer: 2. Redirect to login page
+    User->>AuthServer: 3. Enter credentials
+    AuthServer->>Frontend: 4. Redirect with authorization code
+    Frontend->>AuthServer: 5. Exchange code for tokens
+    AuthServer->>Frontend: 6. ID Token & Access Token
+    Frontend->>User: 7. Render protected page
+    User->>Frontend: 8. Request protected resource
+    Frontend->>Backend: 9. API request with Access Token
+    Backend->>AuthServer: 10. Validate token (introspection)
+    AuthServer->>Backend: 11. Token info (valid)
+    Backend->>Frontend: 12. Requested data
+    Frontend->>User: 13. Display data
 ```
