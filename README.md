@@ -97,22 +97,26 @@ flowchart TB
 ## OAuth Flow Diagram
 ```mermaid
 sequenceDiagram
-    participant User as User
-    participant Frontend as Library Frontend (Thymeleaf)
+    participant User (Browser)
+    participant Frontend as Library Frontend (OAuth2Client, Thymeleaf)
     participant AuthServer as Keycloak Auth Server
     participant Backend as Library Backend (Resource Server)
 
-    User->>Frontend: 1. Access application
-    Frontend->>AuthServer: 2. Redirect to login page
-    User->>AuthServer: 3. Enter credentials
-    AuthServer->>Frontend: 4. Redirect with authorization code
-    Frontend->>AuthServer: 5. Exchange code for tokens
-    AuthServer->>Frontend: 6. ID Token & Access Token
-    Frontend->>User: 7. Render protected page
-    User->>Frontend: 8. Request protected resource
-    Frontend->>Backend: 9. API request with Access Token
-    Backend->>AuthServer: 10. Validate token (introspection)
-    AuthServer->>Backend: 11. Token info (valid)
-    Backend->>Frontend: 12. Requested data
-    Frontend->>User: 13. Display data
+    User->>Frontend: 1. GET / (no session)
+    Frontend->>User: 2. 302 Redirect to /oauth2/authorization/keycloak
+    User->>AuthServer: 3. GET /auth (with client_id, redirect_uri, response_type=code)
+    Note right of User: User enters credentials
+    AuthServer->>User: 4. 302 Redirect with authorization code
+    User->>Frontend: 5. GET /login/oauth2/code/keycloak?code=...
+    Frontend->>AuthServer: 6. Exchange code for tokens
+    AuthServer->>Frontend: 7. {access_token, refresh_token, id_token}
+    Frontend->>User: 8. 302 to / + Set-Cookie: JSESSIONID=...
+
+    User->>Frontend: 9. GET /protected/resource (Cookie: JSESSIONID=...)
+    Note right of Frontend: Retrieve access_token from SecurityContext
+    Frontend->>Backend: 10. GET /api/resource (Authorization: Bearer <access_token>)
+    Backend->>AuthServer: 11. Validate token
+    AuthServer->>Backend: 12. Token info (valid)
+    Backend->>Frontend: 13. 200 OK (data)
+    Frontend->>User: 14. Render protected content
 ```
