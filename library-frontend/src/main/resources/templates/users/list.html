@@ -1,8 +1,9 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org"
-      lang="de">
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
 <head>
   <meta charset="UTF-8">
+  <meta name="_csrf" th:content="${_csrf.token}"/>
+  <meta name="_csrf_header" th:content="${_csrf.headerName}"/>
   <title>Bibliothek - Benutzerliste</title>
   <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
   <link rel="stylesheet" th:href="@{/css/library.min.css}">
@@ -13,9 +14,16 @@
 
 <!-- Hauptinhalt -->
 <div class="container mt-5">
+  <!-- Kopfzeile mit Button -->
   <div class="row mb-4">
-    <div class="col">
+    <div class="col d-flex justify-content-between align-items-center">
       <h1>Benutzerliste</h1>
+      <button type="button"
+              class="btn btn-primary"
+              data-bs-toggle="modal"
+              data-bs-target="#createUserModal">
+        <i class="bi bi-person-plus"></i> Neuer User
+      </button>
     </div>
   </div>
 
@@ -24,12 +32,12 @@
     <div class="col-md-6">
       <form th:action="@{/library/ui/admin/users}" method="get" class="search-form">
         <div class="input-group">
-          <label for="searchInput"></label>
+          <label for="searchInput" class="visually-hidden">Suche</label>
           <input type="text"
                  class="form-control"
                  id="searchInput"
                  name="searchString"
-                 th:value="${param.search}"
+                 th:value="${param.searchString}"
                  placeholder="Suche nach Username, Name oder E-Mail...">
           <button class="btn btn-primary" type="submit">
             Suchen
@@ -88,7 +96,7 @@
           <!-- Zurück -->
           <li class="page-item" th:classappend="${usersPage.first} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${usersPage.number - 1}, searchString=${param.search})}"
+               th:href="@{/library/ui/admin/users(page=${usersPage.number - 1}, searchString=${param.searchString})}"
                tabindex="-1">Zurück</a>
           </li>
 
@@ -97,19 +105,36 @@
               th:each="pageNum : ${#numbers.sequence(0, usersPage.totalPages - 1)}"
               th:classappend="${pageNum == usersPage.number} ? 'active'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${pageNum}, searchString=${param.search})}"
+               th:href="@{/library/ui/admin/users(page=${pageNum}, searchString=${param.searchString})}"
                th:text="${pageNum + 1}">1</a>
           </li>
 
           <!-- Weiter -->
           <li class="page-item" th:classappend="${usersPage.last} ? 'disabled'">
             <a class="page-link"
-               th:href="@{/library/ui/admin/users(page=${usersPage.number + 1}, searchString=${param.search})}">Weiter</a>
+               th:href="@{/library/ui/admin/users(page=${usersPage.number + 1}, searchString=${param.searchString})}">Weiter</a>
           </li>
         </ul>
       </nav>
     </div>
   </div>
 </div>
+
+<!-- 🪄 Modal Fragment einbinden -->
+<div th:replace="~{fragments/create-user-modal :: createUserModal}"></div>
+
+<!-- Bootstrap + JS -->
+<script th:src="@{/js/bootstrap.min.js}"></script>
+
+<!-- AJAX-Config für User-Anlegen -->
+<script th:inline="javascript">
+  window.createUserConfig = {
+    successMessage: 'Benutzer wurde erfolgreich angelegt.',
+    conflictMessage: 'Konflikt: Benutzer konnte nicht angelegt werden.',
+    unknownErrorMessage: 'Unbekannter Fehler beim Anlegen des Benutzers.',
+    networkErrorMessage: 'Netzwerkfehler oder Server nicht erreichbar.'
+  };
+</script>
+<script th:src="@{/js/createUser.js}"></script>
 </body>
 </html>

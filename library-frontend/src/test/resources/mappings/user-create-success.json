@@ -1,0 +1,21 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/library/api/users",
+    "bodyPatterns": [
+      { "contains": "unique-username" }
+    ]
+  },
+  "response": {
+    "status": 201,
+    "jsonBody": {
+      "userName": "unique-username",
+      "firstName": "John",
+      "lastName": "Doe",
+      "email": "john.doe@example.com"
+    },
+    "headers": {
+      "Content-Type": "application/json"
+    }
+  }
+}

@@ -35,7 +35,7 @@ public class JwtLoggingFilter extends OncePerRequestFilter {
   protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
       throws ServletException, java.io.IOException {
 
-    System.out.println("Incoming request: " + request.getRequestURI());
+    System.out.println("Incoming request: " + request.getMethod() + " " + request.getRequestURI());
 
     Enumeration<String> headerNames = request.getHeaderNames();
     if (headerNames != null) {

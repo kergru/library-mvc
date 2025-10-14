@@ -1,0 +1,19 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/library/api/users",
+    "bodyPatterns": [
+      { "contains": "duplicate-username" }
+    ]
+  },
+  "response": {
+    "status": 409,
+    "jsonBody": {
+      "title": "User already exists",
+      "detail": "username"
+    },
+    "headers": {
+      "Content-Type": "application/problem+json"
+    }
+  }
+}

@@ -1,4 +1,4 @@
-package org.kergru.library.client.logging;
+package org.kergru.library.client.librarybackend.logging;
 
 import org.springframework.http.HttpRequest;
 import org.springframework.http.client.ClientHttpRequestExecution;

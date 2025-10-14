@@ -20,4 +20,8 @@ public interface UserRepository extends JpaRepository<UserEntity, Long> {
          u.email LIKE %:#{#searchString}%)
   """)
   Page<UserEntity> searchUsersPaged(String searchString, Pageable pageable);
+
+  Optional<UserEntity> findByUsernameOrEmail(String username, String email);
+
+  void deleteByUsername(String username);
 }

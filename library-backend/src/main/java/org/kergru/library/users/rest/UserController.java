@@ -1,5 +1,6 @@
 package org.kergru.library.users.rest;
 
+import java.net.URI;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -8,7 +9,9 @@ import org.kergru.library.model.LoanDto;
 import org.kergru.library.model.PageResponseDto;
 import org.kergru.library.model.UserDto;
 import org.kergru.library.users.service.UserService;
+import org.kergru.library.users.service.UserService.UserAlreadyExistsException;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -36,13 +39,34 @@ public class UserController {
 
   @GetMapping("/users")
   @PreAuthorize("hasRole('LIBRARIAN')")
-  public ResponseEntity<PageResponseDto<UserDto>> getAllUsers(
+  public ResponseEntity<PageResponseDto<UserDto>> searchUsers(
       @RequestParam(required = false) String searchString,
       @RequestParam(defaultValue = "0") int page,
       @RequestParam(defaultValue = "10") int size,
       @RequestParam(defaultValue = "firstname") String sortBy
   ) {
     return ResponseEntity.ok(userService.searchUsers(searchString, page, size, sortBy));
+  }
+
+  @PostMapping("/users")
+  @PreAuthorize("hasRole('LIBRARIAN')")
+  public ResponseEntity<?> createUser(@RequestBody UserDto user) {
+    try {
+      return ResponseEntity.created(URI.create("/library/api/users/" + user.userName()))
+          .body(userService.createUser(user));
+    } catch (UserAlreadyExistsException e) {
+      ProblemDetail problem = ProblemDetail.forStatus(HttpStatus.CONFLICT);
+      problem.setTitle("User already exists");
+      problem.setDetail(e.getHints());
+      return ResponseEntity.status(HttpStatus.CONFLICT).body(problem);
+    }
+  }
+
+  @DeleteMapping("/users/{userName}")
+  @PreAuthorize("hasRole('LIBRARIAN')")
+  public ResponseEntity<?> deleteUser(@PathVariable String userName) {
+    userService.deleteUser(userName);
+    return ResponseEntity.noContent().build();
   }
 
   /**

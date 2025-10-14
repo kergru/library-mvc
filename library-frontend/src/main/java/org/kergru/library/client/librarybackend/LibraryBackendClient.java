@@ -1,5 +1,7 @@
-package org.kergru.library.client;
+package org.kergru.library.client.librarybackend;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import org.kergru.library.model.BookDto;
@@ -9,6 +11,7 @@ import org.kergru.library.model.UserDto;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.http.ProblemDetail;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestClient;
@@ -111,6 +114,38 @@ public class LibraryBackendClient {
   }
 
   /**
+   * Creates a new user in the backend.
+   */
+  public UserDto createUser(UserDto userDto) {
+    try {
+      return restClient.post()
+          .uri("/library/api/users")
+          .body(userDto)
+          .retrieve()
+          .body(UserDto.class);
+    } catch (HttpClientErrorException.Conflict e) {
+      logger.error("Failed to create user, user already exists", e);
+      try {
+        String errorBody = e.getResponseBodyAsString();
+        ProblemDetail problemDetail = new ObjectMapper().readValue(errorBody, ProblemDetail.class);
+        throw new UserAlreadyExistsException(problemDetail.getDetail());
+      } catch (IOException ex) {
+        throw new RuntimeException(ex);
+      }
+    }
+  }
+
+  /**
+   * Deletes a user from the backend.
+   */
+  public void deleteUser(String s) {
+    restClient.delete()
+        .uri("/library/api/users/{userName}", s)
+        .retrieve()
+        .toBodilessEntity();
+  }
+
+  /**
    * Borrows a book to a user. Endpoint is only available for the user himself.
    */
   public LoanDto borrowBook(String isbn, String userName) {
@@ -126,11 +161,26 @@ public class LibraryBackendClient {
     }
   }
 
+  /**
+   * Returns a book to library. Endpoint is only available for the user himself.
+   */
   public void returnBook(Long loanId, String userName) {
     restClient.delete()
         .uri("/library/api/users/{userName}/loans/{loanId}", userName, loanId)
         .retrieve()
         .toBodilessEntity();
+  }
+
+  public static class  UserAlreadyExistsException extends RuntimeException {
+    private final String hints;
+    public UserAlreadyExistsException(String hints) {
+      super("User already exists");
+      this.hints = hints;
+    }
+
+    public String getHints() {
+      return hints;
+    }
   }
 
   public static class BookAlreadyBorrowedException extends RuntimeException {

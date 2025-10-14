@@ -15,7 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
       alertContainer.innerHTML = '';
 
       try {
-        const response = await fetch(`/library/ui/me/borrowBook/${isbn}`, {
+        const response = await fetch(`/library/rest/me/borrowBook/${isbn}`, {
           method: 'POST',
           headers: {
             [csrfHeader]: csrfToken

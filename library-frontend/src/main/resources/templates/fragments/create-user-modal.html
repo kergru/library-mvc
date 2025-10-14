@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<head>
+  <meta charset="UTF-8">
+  <title>Benutzer anlegen</title>
+</head>
+<body>
+
+<div th:fragment="createUserModal">
+  <div class="modal fade" id="createUserModal" tabindex="-1" aria-labelledby="createUserModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="createUserModalLabel">Neuen Benutzer anlegen</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div id="modal-alert-container"></div>
+
+          <form id="createUserFormModal" onsubmit="event.preventDefault();">
+            <div class="row mb-3">
+              <div class="col-md-6">
+                <label for="firstNameModal" class="form-label">Vorname</label>
+                <input type="text" id="firstNameModal" class="form-control" required>
+              </div>
+              <div class="col-md-6">
+                <label for="lastNameModal" class="form-label">Nachname</label>
+                <input type="text" id="lastNameModal" class="form-control" required>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="usernameModal" class="form-label">Benutzername</label>
+              <input type="text" id="usernameModal" class="form-control" required
+                     data-error-taken="Benutzername ist bereits vergeben.">
+              <div class="invalid-feedback" id="usernameModal-error"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="emailModal" class="form-label">E-Mail-Adresse</label>
+              <input type="email" id="emailModal" class="form-control" required
+                     data-error-taken="E-Mail-Adresse wird bereits verwendet.">
+              <div class="invalid-feedback" id="emailModal-error"></div>
+            </div>
+
+            <div class="mb-3">
+              <label for="passwordModal" class="form-label">Passwort</label>
+              <input type="password" id="passwordModal" class="form-control" required>
+            </div>
+          </form>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Abbrechen</button>
+          <button type="button" class="btn btn-primary" id="createUserModalButton">Benutzer anlegen</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

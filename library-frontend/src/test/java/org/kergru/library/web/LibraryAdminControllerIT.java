@@ -19,11 +19,14 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 
 /**
- * Integration test for the {@link LibraryAdminController}. KeyCloak is mocked using mockJwt(), no KeyCloak container required Library Backend is mocked using WireMock Webclient is
- * configured to use a mock JWT
+ * Integration test for the {@link LibraryAdminController}.
+ * - it uses MockMvc,
+ * - KeyCloak is mocked using mockJwt(), no KeyCloak container required
+ * - Library Backend is mocked using WireMock.
+ * - Webclient is configured to use a mock JWT
  */
 @AutoConfigureMockMvc
-@AutoConfigureWireMock(port = 8081)
+@AutoConfigureWireMock(port = 0)
 @Import(MockOAuth2Config.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class LibraryAdminControllerIT {

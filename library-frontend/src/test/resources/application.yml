@@ -1,0 +1,3 @@
+library:
+  backend:
+    baseUrl: http://localhost:${wiremock.server.port}

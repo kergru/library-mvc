@@ -43,6 +43,7 @@ public class OAuth2LoginSecurityConfig {
         .authorizeHttpRequests(authorize -> authorize
             .requestMatchers("/", "/login", "/public/**").permitAll()
             .requestMatchers("/library/ui/admin/**").hasAuthority("ROLE_LIBRARIAN")
+            .requestMatchers("/library/rest/admin/**").hasAuthority("ROLE_LIBRARIAN")
             .anyRequest().authenticated()
         )
         .oauth2Login(oauth2 -> oauth2

@@ -20,26 +20,19 @@ Project uses Keycloak as OAuth2 provider and MySQL as database which will be sta
 
 ## Components
 
-| Layer                             | Component                                   | Purpose                                                           |
-|-----------------------------------|---------------------------------------------|-------------------------------------------------------------------|
-| **Frontend (`library-frontend`)** | Spring Boot MVC + Thymeleaf + OAuth2 Client | Authenticates user via OIDC, <br/>calls backend with Bearer Token |
-| **Backend (`library-backend`)**   | Spring Boot Resource Server                 | Validates JWT (Access Token), <br/>valididate Signatur über JWKS  |
-| **Authorization Server (Docker)** | Keycloak                                    | Executes user login, provides tokens and public keys via JWKS     |
-| **Database (Docker)**             | MySQL                                       | Stores library and Keycloak data                                  |
-| **User (Browser)**                | Webbrowser                                  | Access to protected data                                          |
+| Layer                                        | Component                                            | Purpose                                                           |
+|----------------------------------------------|------------------------------------------------------|-------------------------------------------------------------------|
+| **Frontend (`library-frontend`)**            |                                                      |
+| -- OAuth2LoginSecurityChain                  | Spring SecurityChain + OAuth2 Client                 | Authenticates user via OIDC, <br/>calls backend with Bearer Token |
+| -- LibraryController, LibraryAdminController | Spring Boot MVC + Thymeleaf                          | Renders Library UI                                                |
+| -- LibraryApiRestController                  | RestController                                       | Handles Ajax requests to create loans or adds new Library users   |
+| -- LibraryBackendClient                      | OAuth2 Client to execute requests to library-backend | Executes requests to library-backend                              |
+| -- KeycloakAdminClient                       | OAuth2 Client to execute requests to keycloak admin  | Executes requests to keycloak to add user                         |
+| **Backend (`library-backend`)**              | Spring Boot Resource Server                          | Validates JWT (Access Token), <br/>valididate Signatur über JWKS  |
+| **Authorization Server (Docker)**            | Keycloak                                             | Executes user login, provides tokens and public keys via JWKS     |
+| **Database (Docker)**                        | MySQL                                                | Stores library and Keycloak data                                  |
+| **User (Browser)**                           | Webbrowser                                           | Access to protected data                                          |
 
-## Core Spring Components per Module
-
-| Module               | Layer / Area             | Key Classes / Beans                                                                                                                                                   | Purpose                                                                         |
-|----------------------|--------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------|---------------------------------------------------------------------------------|
-| **library-frontend** | **Security**             | `SecurityFilterChain` (with `.oauth2Login()`)<br>`ClientRegistrationRepository`<br>`OAuth2AuthorizedClientService`<br>`AuthenticationPrincipal`                       | Handles OIDC login, stores tokens, and manages the `SecurityContext`            |
-|                      | **Web / Controller**     | `@Controller`, `@GetMapping`, `Model`<br>`ThymeleafViewResolver`                                                                                                      | Renders HTML UI with Thymeleaf and provides routes such as `/books`, `/login`   |
-|                      | **Service / API Calls**  | `RestTemplate` or `WebClient` (with `ServerOAuth2AuthorizedClientExchangeFilterFunction`)                                                                             | Invokes the `library-backend` REST endpoints using Bearer Tokens                |
-|                      | **Configuration**        | `application.yml` with `spring.security.oauth2.client.registration.*`                                                                                                 | Defines Client ID, Secret, Scopes, Redirect URI, and provider endpoints         |
-| **library-backend**  | **Security**             | `SecurityFilterChain` (with `.oauth2ResourceServer().jwt()`)<br>`JwtDecoder` (`NimbusJwtDecoder`)<br>`JwtAuthenticationConverter`<br>`JwtGrantedAuthoritiesConverter` | Validates JWTs, checks signatures, and converts claims into granted authorities |
-|                      | **Web / REST API**       | `@RestController`, `@GetMapping`, `ResponseEntity`                                                                                                                    | Exposes protected REST endpoints (e.g. `/api/books`, `/api/users`)              |
-|                      | **Data / Service Layer** | `@Service`, `@Repository`, JPA entities                                                                                                                               | Business logic, database access, and persistence                                |
-|                      | **Configuration**        | `application.yml` with `spring.security.oauth2.resourceserver.jwt.jwk-set-uri`                                                                                        | Defines JWKS URI and other security properties                                  |
 
 ## Architecture Diagram
 

@@ -21,5 +21,14 @@ library:
   backend:
     baseUrl: http://localhost:8081
 
+keycloak:
+  admin:
+    base-url: http://localhost:8085
+    realm: master
+    client-id: admin-cli
+    username: admin
+    password: pwd
+
 server:
   port: 8080
+

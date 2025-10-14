@@ -1,6 +1,6 @@
-package org.kergru.library.client;
+package org.kergru.library.client.librarybackend;
 
-import org.kergru.library.client.logging.LoggingInterceptor;
+import org.kergru.library.client.librarybackend.logging.LoggingInterceptor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
