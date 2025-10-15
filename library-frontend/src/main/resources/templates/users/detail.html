@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="de">
+<html
+    xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+    lang="de">
 <head>
   <meta charset="UTF-8">
   <title>Benutzerdetails</title>
@@ -11,7 +14,7 @@
 <div th:replace="~{fragments/header :: header}"></div>
 
 <div class="container mt-4">
-  <a th:if="${isLibrarian}" href="/library/ui/admin/users" class="btn btn-secondary mb-4">← Zurück zur Übersicht</a>
+  <a sec:authorize="hasRole('LIBRARIAN')" href="/library/ui/admin/users" class="btn btn-secondary mb-4">← Zurück zur Übersicht</a>
 
   <!-- Benutzerdaten -->
   <div class="card mb-4">
