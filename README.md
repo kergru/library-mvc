@@ -116,3 +116,29 @@ sequenceDiagram
     Frontend->>+Frontend: 19. Render Thymeleaf template
     Frontend-->>-User: 20. Display protected page
 ```
+
+## Spring Components in OAuth2 security
+
+### OAuth2 Login / OpenID Connect
+
+| Class / Interface                                                                             | Role                                                        | Notes                                                                    |
+| --------------------------------------------------------------------------------------------- |-------------------------------------------------------------|--------------------------------------------------------------------------|
+| `org.springframework.security.oauth2.client.registration.ClientRegistration`                  | Represents a client registration                            | Holds `clientId`, `clientSecret`, `redirectUri`, `scopes`, etc.          |
+| `org.springframework.security.oauth2.client.registration.ClientRegistrationRepository`        | Provides client registrations                               | (Often implemented with `InMemoryClientRegistrationRepository` -> Testing) |
+| `org.springframework.security.oauth2.client.web.OAuth2AuthorizationRequestRedirectFilter`     | Redirects the user to the Authorization Server              | Automatically registered                                                 |
+| `org.springframework.security.oauth2.client.web.OAuth2LoginAuthenticationFilter`              | Handles the redirect back with the authorization code       | Central for `oauth2Login()`                                              |
+| `org.springframework.security.oauth2.client.authentication.OAuth2LoginAuthenticationProvider` | Processes the Authorization Code flow                       | Invoked by the filter                                                    |
+| `org.springframework.security.oauth2.client.OAuth2AuthorizedClientService`                    | Manages authorized clients (stores access tokens)           | In-memory or JDBC                                                        |
+| `org.springframework.security.oauth2.client.web.OAuth2AuthorizedClientRepository`             | Binds authorized clients to the SecurityContext/session     | Important for web apps                                                   |
+| `org.springframework.security.oauth2.client.web.client.OAuth2ClientHttpRequestInterceptor`    | Relays the token from security context to outgoing requests | Important for resourceserver requests                                    |
+
+### OAuth2 Resourceserver
+
+| Class / Interface                                                                                            | Role                                        | Notes                             |
+| ------------------------------------------------------------------------------------------------------------ | ------------------------------------------- | --------------------------------- |
+| `org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter`              | Converts JWT claims to `GrantedAuthorities` | Often customized for role mapping |
+| `org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationProvider`               | Validates JWT tokens                        | Called internally                 |
+| `org.springframework.security.oauth2.server.resource.web.BearerTokenAuthenticationFilter`                    | Extracts Bearer tokens from the request     | Core entry point                  |
+| `org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationEntryPoint` | Handles missing authentication              | Returns `401`                     |
+| `org.springframework.security.oauth2.jwt.JwtDecoder`                                                         | Decodes and validates tokens                | e.g., `NimbusJwtDecoder`          |
+| `org.springframework.security.oauth2.server.resource.web.access.BearerTokenAccessDeniedHandler`              | Handles access denied cases                 | Returns `403`                     |
